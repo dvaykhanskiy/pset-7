@@ -32,6 +32,7 @@ public class Application {
         System.out.println("PowerSchool -- now for students, teachers, and school administrators!");
 
         // continuously prompt for login credentials and attempt to login
+        
 
         while (true) {
             System.out.print("\nUsername: ");
