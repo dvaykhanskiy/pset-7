@@ -3,6 +3,8 @@ package com.apcsa.model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.apcsa.controller.Utils;
+
 public class User {
 
     private int userId;
@@ -124,4 +126,8 @@ public class User {
     public boolean isStudent() {
         return accountType.equals("student");
     }
+
+	public void setPassword(String newPassword) {
+		this.password = Utils.getHash(password);
+	}
 }

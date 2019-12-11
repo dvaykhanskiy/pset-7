@@ -51,7 +51,10 @@ public class Application {
                     ? activeUser : null;
 
                 if (isFirstLogin() && !activeUser.isRoot()) {
-                    // first-time users need to change their passwords from the default provided
+                    System.out.print("Enter new password: ");
+                    String newPassword = in.nextLine();
+                    activeUser.setPassword(newPassword);
+                    
                 }
 
                 // create and show the user interface

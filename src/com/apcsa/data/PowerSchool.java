@@ -211,6 +211,29 @@ public class PowerSchool {
             return -1;
         }
     }
+    
+    private static int updateAuth(Connection conn, String username, String auth) {
+        try (PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_AUTH_SQL)) {
+
+            conn.setAutoCommit(false);
+            stmt.setString(1, auth);
+            stmt.setString(2, username);
+
+            if (stmt.executeUpdate() == 1) {
+                conn.commit();
+
+                return 1;
+            } else {
+                conn.rollback();
+
+                return -1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            return -1;
+        }
+    }
 
     /*
      * Builds the database. Executes a SQL script from a configuration file to
