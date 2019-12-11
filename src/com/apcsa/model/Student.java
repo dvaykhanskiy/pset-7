@@ -1,6 +1,7 @@
 package com.apcsa.model;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import com.apcsa.model.User;
 
@@ -15,7 +16,7 @@ public class Student extends User {
     private String firstName;
     private String lastName;
     
-    public Student(User user, ResultSet rs) {
+    public Student(User user, ResultSet rs) throws SQLException {
     	super(user.getUserId(), user.getAccountType(), user.getUsername(), user.getPassword(), user.getLastLogin());
     	
     	this.studentId = rs.getInt("student_id");
