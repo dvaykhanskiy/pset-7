@@ -285,4 +285,30 @@ public class PowerSchool {
         // execute the update statement
         //
     }
+    
+    /**
+     * Retrieves all faculty members.
+     * 
+     * @return a list of teachers
+     */
+     
+     public static ArrayList<Teacher> getTeachers() {
+        ArrayList<Teacher> teachers = new ArrayList<Teacher>();
+        
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+                        
+            try (ResultSet rs = stmt.executeQuery(QueryUtils.GET_ALL_TEACHERS_SQL)) {
+                while (rs.next()) {
+                    teachers.add(new Teacher(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return teachers;
+    }
+     
+     
 }
