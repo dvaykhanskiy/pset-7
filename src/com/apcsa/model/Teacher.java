@@ -12,6 +12,7 @@ public class Teacher extends User {
     private int departmentId;
     private String firstName;
     private String lastName;
+	private String departmentName;
 
     public Teacher(User user, ResultSet rs) throws SQLException {
     	super(user);
@@ -20,5 +21,6 @@ public class Teacher extends User {
     	this.departmentId = rs.getInt("department_id");
     	this.firstName = rs.getString("first_name");
     	this.lastName = rs.getString("last_name");
+    	this.departmentName = rs.getString("department_id");
 	}
 }
