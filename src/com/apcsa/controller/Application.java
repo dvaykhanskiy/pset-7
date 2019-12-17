@@ -150,6 +150,23 @@ public class Application {
         return selection;
     }
     
+    private int getGradeSelection() {
+        int selection = -1;
+        System.out.println("\nChoose a grade level.");
+        
+        while (selection < 1 || selection > 4) {
+            System.out.println("\n[1] Freshman.");
+            System.out.println("[2] Sophomore.");
+            System.out.println("[3] Junior.");
+            System.out.println("[4] Senior.");
+            System.out.print("\n::: ");
+            
+            selection = Utils.getInt(in, -1);
+        }
+        
+        return selection + 8;   // +8 because you want a value between 9 and 12
+    }
+    
     public void createAndShowUI() {
         System.out.println("\nHello, again, " + activeUser.getFirstName() + "!");
         
