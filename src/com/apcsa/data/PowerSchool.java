@@ -272,4 +272,17 @@ public class PowerSchool {
             e.printStackTrace();
         }
     }
+    
+    public static void resetPassword(String username) {
+        //
+        // get a connection to the database
+        // create a prepared statement (both of thses should go in a try-with-resources statement)
+        //
+        // insert parameters into the prepared statement
+        //      - the user's hashed username
+        //      - the user's plaintext username
+        //
+        // execute the update statement
+        //
+    }
 }

@@ -13,7 +13,124 @@ public class Application {
      * Creates an instance of the Application class, which is responsible for interacting
      * with the user via the command line interface.
      */
+    enum RootAction { PASSWORD, DATABASE, LOGOUT, SHUTDOWN }
+    
+    enum AdministratorAction { FACULTY, DEPARTMENT, STUDENTS, GRADE, COURSE, PASSWORD, LOGOUT }
+    
+    private void showAdministratorUI() {
+        while (activeUser != null) {
+            switch (getAdministratorMenuSelection()) {
+                case FACULTY: viewFaculty(); break;
+                case DEPARTMENT: viewFacultyByDepartment(); break;
+                case STUDENTS: viewStudents(); break;
+                case GRADE: viewStudentsByGrade(); break;
+                case COURSE: viewStudentsByCourse(); break;
+                case PASSWORD: changePassword(false); break;
+                case LOGOUT: logout(); break;
+                default: System.out.println("\nInvalid selection."); break;
+            }
+        }
+    }
+    
+    private AdministratorAction getAdministratorMenuSelection() {
+        System.out.println();
+        
+        System.out.println("[1] View faculty.");
+        System.out.println("[2] View faculty by department.");
+        System.out.println("[3] View student enrollment.");
+        System.out.println("[4] View student enrollment by grade.");
+        System.out.println("[5] View student enrollment by course.");
+        System.out.println("[6] Change password.");
+        System.out.println("[7] Logout.");
+        System.out.print("\n::: ");
 
+        switch (Utils.getInt(in, -1)) {
+            case 1: return AdministratorAction.FACULTY;
+            case 2: return AdministratorAction.DEPARTMENT;
+            case 3: return AdministratorAction.STUDENTS;
+            case 4: return AdministratorAction.GRADE;
+            case 5: return AdministratorAction.COURSE;
+            case 6: return AdministratorAction.PASSWORD;
+            case 7: return AdministratorAction.LOGOUT;
+        }
+        
+        return null;
+    }
+    
+    private void viewFaculty() {        
+        ArrayList<Teacher> teachers = PowerSchool.getTeachers();
+        
+        if (teachers.isEmpty()) {
+            System.out.println("\nNo teachers to display.");
+        } else {
+            System.out.println();
+            
+            int i = 1;
+            for (Teacher teacher : teachers) {
+                System.out.println(i++ + ". " + teacher.getName() + " / " + teacher.getDepartmentName());
+            } 
+        }
+    }
+    
+    private void viewFacultyByDepartment() {
+        //
+        // get a list of teachers by department (this requires a database call)
+        //      to do this, you'll need to prompt the user to choose a department (more on this later)
+        //
+        // if list of teachers is empty...
+        //      print a message saying exactly that
+        // otherwise...
+        //      print the list of teachers by name an department (just like last time)
+        //
+    }
+    
+    private void viewStudents() {
+        //
+        // get a list of students
+        //
+        // if list of students is empty...
+        //      print a message saying exactly that
+        // otherwise...
+        //      print the list of students by name and graduation year
+        //
+    }
+    
+    private void viewStudentsByGrade() {
+        //
+        // get list of students by grade
+        //      to do this, you'll need to prompt the user to choose a grade level (more on this later)
+        //
+        // if the list of students is empty...
+        //      print a message saying exactly that
+        // otherwise...
+        //      print the list of students by name and class rank
+        //
+    }
+    
+    private void viewStudentsByCourse() {
+        //
+        // get a list of students by course
+        //      to do this, you'll need to prompt the user to choose a course (more on this later)
+        //
+        // if the list of students is empty...
+        //      print a message saying exactly that
+        // otherwise...
+        //      print the list of students by name and grade point average
+        //
+    }
+    
+    public void createAndShowUI() {
+        System.out.println("\nHello, again, " + activeUser.getFirstName() + "!");
+        
+        if (activeUser.isRoot()) {
+            showRootUI();
+        } else if (activeUser.isAdministrator()) {
+            showAdministratorUI();
+        } else {
+            // TODO - add cases for teacher, student, and unknown
+        }
+    }
+    
     public Application() {
         this.in = new Scanner(System.in);
 
@@ -42,31 +159,137 @@ public class Application {
             String password = in.next();
 
             // if login is successful, update generic user to administrator, teacher, or student
-
-            if (login(username, password)) {
-                activeUser = activeUser.isAdministrator()
-                    ? PowerSchool.getAdministrator(activeUser) : activeUser.isTeacher()
-                    ? PowerSchool.getTeacher(activeUser) : activeUser.isStudent()
-                    ? PowerSchool.getStudent(activeUser) : activeUser.isRoot()
-                    ? activeUser : null;
-
-                if (isFirstLogin() && !activeUser.isRoot()) {
-                    System.out.print("Enter new password: ");
-                    String newPassword = in.nextLine();
-                    activeUser.setPassword(newPassword);
+            try {
+                if (login(username, password)) {
+                    activeUser = activeUser.isAdministrator()
+                        ? PowerSchool.getAdministrator(activeUser) : activeUser.isTeacher()
+                        ? PowerSchool.getTeacher(activeUser) : activeUser.isStudent()
+                        ? PowerSchool.getStudent(activeUser) : activeUser.isRoot()
+                        ? activeUser : null;
+                        
+                    if (isFirstLogin() && !activeUser.isRoot()) {
+                    	System.out.print("Enter new password: ");
+                        String newPassword = in.nextLine();
+                        activeUser.setPassword(newPassword);
+                    }
                     
+                    createAndShowUI();
+                } else {
+                    System.out.println("\nInvalid username and/or password.");
                 }
-
-                // create and show the user interface
-                //
-                // remember, the interface will be difference depending on the type
-                // of user that is logged in (root, administrator, teacher, student)
-            } else {
-                System.out.println("\nInvalid username and/or password.");
+            } catch (Exception e) {
+                shutdown(e);
             }
         }
     }
 
+    public void createAndShowUI() {
+        System.out.println("\nHello, again, " + activeUser.getFirstName() + "!");
+        
+        if (activeUser.isRoot()) {
+            showRootUI();
+        } else if (activeUser.isAdministrator()) {
+            showAdministratorUI();
+        } else {
+            // TODO - add cases for teacher, student, and unknown
+        }
+    }
+    
+    private void showRootUI() {
+        while (activeUser != null) {
+            switch (getRootMenuSelection()) {
+                case PASSWORD: resetPassword(); break;
+                case DATABASE: factoryReset(); break;
+                case LOGOUT: logout(); break;
+                case SHUTDOWN: shutdown(); break;
+                default: System.out.println("\nInvalid selection."); break;
+            }
+        }
+    }
+    
+    private RootAction getRootMenuSelection() {
+        System.out.println();
+        
+        System.out.println("[1] Reset user password.");
+        System.out.println("[2] Factory reset database.");
+        System.out.println("[3] Logout.");
+        System.out.println("[4] Shutdown.");
+        System.out.print("\n::: ");
+        
+        switch (Utils.getInt(in, -1)) {
+            case 1: return RootAction.PASSWORD;
+            case 2: return RootAction.DATABASE;
+            case 3: return RootAction.LOGOUT;
+            case 4: return RootAction.SHUTDOWN;
+            default: return null;
+        }
+     }
+    
+    private void resetPassword() {
+        //
+        // prompt root user to enter username of user whose password needs to be reset
+        //
+        // ask root user to confirm intent to reset the password for that username
+        //
+        // if confirmed...
+        //      call database method to reset password for username
+        //      print success message
+        //
+    }
+    
+    private void factoryReset() {
+        //
+        // ask root user to confirm intent to reset the database
+        //
+        // if confirmed...
+        //      call database initialize method with parameter of true
+        //      print success message
+        //
+    }
+    
+    private void logout() {
+        //
+        // ask user to confirm intent to logout
+        //
+        // if confirmed...
+        //      set activeUser to null
+        //
+    }
+    
+    /*
+     * Shuts down the application after encountering an error.
+     * 
+     * @param e the error that initiated the shutdown sequence
+     */
+
+    private void shutdown(Exception e) {
+        if (in != null) {
+            in.close();
+        }
+        
+        System.out.println("Encountered unrecoverable error. Shutting down...\n");
+        System.out.println(e.getMessage());
+                
+        System.out.println("\nGoodbye!");
+        System.exit(0);
+    }
+
+    /*
+     * Releases all resources and kills the application.
+     */
+
+    private void shutdown() {        
+        System.out.println();
+            
+        if (Utils.confirm(in, "Are you sure? (y/n) ")) {
+            if (in != null) {
+                in.close();
+            }
+            
+            System.out.println("\nGoodbye!");
+            System.exit(0);
+        }
+    }
     /**
      * Logs in with the provided credentials.
      *
