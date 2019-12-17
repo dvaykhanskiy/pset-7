@@ -1,5 +1,6 @@
 package com.apcsa.controller;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 import com.apcsa.data.PowerSchool;
 import com.apcsa.model.User;
@@ -165,6 +166,24 @@ public class Application {
         }
         
         return selection + 8;   // +8 because you want a value between 9 and 12
+    }
+    
+    private String getCourseSelection() throws SQLException {
+        boolean valid = false;
+        String courseNo = null;
+        
+        while (!valid) {
+            System.out.print("\nCourse No.: ");
+            courseNo = in.next();
+            
+            if (/* is a valid course number */) {
+                valid = true;
+            } else {
+                System.out.println("\nCourse not found.");
+            }
+        }
+        
+        return courseNo;
     }
     
     public void createAndShowUI() {
