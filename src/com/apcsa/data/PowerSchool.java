@@ -317,7 +317,26 @@ public class PowerSchool {
         }
         
         return teachers;
-    }
+     }
+     
+     public static String getHash(String plaintext) {
+    	    StringBuilder pwd = new StringBuilder();
+
+    	    try {
+    	        MessageDigest md = MessageDigest.getInstance("MD5");
+
+    	        md.update(plaintext.getBytes());
+    	        byte[] digest = md.digest(plaintext.getBytes());
+
+    	        for (int i = 0; i < digest.length; i++) {
+    	            pwd.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
+    	        }
+    	    } catch (NoSuchAlgorithmException e) {
+    	        e.printStackTrace();
+    	    }
+
+    	    return pwd.toString();
+    	}
      
      
 }
