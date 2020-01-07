@@ -480,5 +480,19 @@ public class PowerSchool {
          return round(mpAvg * mpWeight + examAvg * examWeight, 2);
      }
      
+     /**
+      * Rounds a number to a set number of decimal places.
+      * 
+      * @param value the value to round
+      * @param places the number of decimal places
+      * @return the rounded value
+      */
+         
+     private static double round(double value, int places) {
+         return new BigDecimal(Double.toString(value))
+             .setScale(places, RoundingMode.HALF_UP)
+             .doubleValue();
+     }
+     
      
 }
