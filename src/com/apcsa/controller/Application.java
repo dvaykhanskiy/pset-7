@@ -494,6 +494,7 @@ public class Application {
     
     private int getDepartmentSelection() {
         int selection = -1;
+        
         System.out.println("\nChoose a department.");
 
         while (selection < 1 || selection > 6) {
@@ -509,6 +510,21 @@ public class Application {
         }
 
         return selection;
+    }
+    
+    private void viewStudents() {
+        ArrayList<Student> students = PowerSchool.getStudents();
+
+        if (students.isEmpty()) {
+            System.out.println("\nNo students to display.");
+        } else {
+            System.out.println();
+
+            int i = 1;
+            for (Student student : students) {
+                System.out.println(i++ + ". " + student.getName() + " / " + student.getGraduationYear());
+            }
+        }
     }
     
     private void factoryReset() {
