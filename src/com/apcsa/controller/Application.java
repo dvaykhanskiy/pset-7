@@ -12,7 +12,30 @@ public class Application {
 
     private Scanner in;
     private User activeUser;
-
+    
+    
+    
+    public static final int RTCHANGEPWD = 1;    // ROOT - reset user password
+    public static final int RTRESETDB = 2;      // ROOT - factory reset database
+    public static final int RTLOGOUT = 3;       // ROOT - logout
+    public static final int RTSHUTDOWN = 4;     // ROOT - shut down
+    public static final int ADBYFAC = 1;        // ADMIN - view faculty
+    public static final int ADBYDEP = 2;        // ADMIN - view by department (#22)
+    public static final int ADBYENROLL = 3;     // ADMIN - view student enrollment
+    public static final int ADBYGRADE = 4;      // ADMIN - view by grade
+    public static final int ADBYCOURSE = 5;     // ADMIN - view by course
+    public static final int ADCHANGEPWD = 6;    // ADMIN - change password
+    public static final int ADLOGOUT = 7;       // ADMIN - logout
+    public static final int TCBYCOURSE = 1;     // TEACHER - view enrollment by course
+    public static final int TCNEWASGN = 2;      // TEACHER - add assignment
+    public static final int TCDLTASGN = 3;      // TEACHER - delete assignment
+    public static final int TCNEWGRD = 4;       // TEACHER - enter grade
+    public static final int TCCHANGEPWD = 5;    // TEACHER - change password
+    public static final int TCLOGOUT = 6;       // TEACHER - logout
+    public static final int STVIEWGRD = 1;      // STUDENT - view course grades
+    public static final int STBYCOURSE = 2;     // STUDENT - view assignment grades by course
+    public static final int STCHANGEPWD = 3;    // STUDENT - change password
+    public static final int STLOGOUT = 4;       // STUDENT - logout
     /**
      * Creates an instance of the Application class, which is responsible for interacting
      * with the user via the command line interface.
