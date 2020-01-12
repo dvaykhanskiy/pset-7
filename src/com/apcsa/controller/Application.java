@@ -1,8 +1,11 @@
 package com.apcsa.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import com.apcsa.data.PowerSchool;
+import com.apcsa.model.Student;
+import com.apcsa.model.Teacher;
 import com.apcsa.model.User;
 
 public class Application {
