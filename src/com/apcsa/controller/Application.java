@@ -423,6 +423,16 @@ public class Application {
         }
      }
     
+    public boolean logoutConfirm() {
+        System.out.print("\nAre you sure you want to logout? (y/n) ");
+        String logoutDecision = in.next();
+        if (logoutDecision.equals("y")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
     private void resetPassword() {
     	System.out.print("\nUsername: ");
         String username = in.next();
