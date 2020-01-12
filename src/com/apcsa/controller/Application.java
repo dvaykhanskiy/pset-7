@@ -13,6 +13,7 @@ public class Application {
     private Scanner in;
     private User activeUser;
     
+    public static boolean running;
     
     
     public static final int RTCHANGEPWD = 1;    // ROOT - reset user password
@@ -242,7 +243,6 @@ public class Application {
         System.out.println("PowerSchool -- now for students, teachers, and school administrators!");
 
         // continuously prompt for login credentials and attempt to login
-        
 
         while (true) {
             System.out.print("\nUsername: ");
@@ -252,26 +252,142 @@ public class Application {
             String password = in.next();
 
             // if login is successful, update generic user to administrator, teacher, or student
-            try {
-                if (login(username, password)) {
-                    activeUser = activeUser.isAdministrator()
-                        ? PowerSchool.getAdministrator(activeUser) : activeUser.isTeacher()
-                        ? PowerSchool.getTeacher(activeUser) : activeUser.isStudent()
-                        ? PowerSchool.getStudent(activeUser) : activeUser.isRoot()
-                        ? activeUser : null;
-                        
-                    if (isFirstLogin() && !activeUser.isRoot()) {
-                    	System.out.print("Enter new password: ");
-                        String newPassword = in.nextLine();
-                        activeUser.setPassword(newPassword);
+
+            if (login(username, password)) {
+                activeUser = activeUser.isAdministrator()
+                    ? PowerSchool.getAdministrator(activeUser) : activeUser.isTeacher()
+                    ? PowerSchool.getTeacher(activeUser) : activeUser.isStudent()
+                    ? PowerSchool.getStudent(activeUser) : activeUser.isRoot()
+                    ? activeUser : null;
+
+                if (isFirstLogin() && !activeUser.isRoot()) {
+                    // first-time users need to change their passwords from the default provided
+                    System.out.print("\nEnter new password: ");
+                    String newPassword = in.next();
+                    PowerSchool.changePassword(username, newPassword);
+                    System.out.println("\nSuccessfully changed password.");
+                ////////////////////////////// ROOT ////////////////////////////
+                } else if (activeUser.isRoot()) {
+                    boolean validLogin = true;
+                    System.out.println("\nHello, again, ROOT!");
+                    while (validLogin) {
+                        switch (getSelectionRoot()) {
+                            case RTCHANGEPWD:
+                                resetPassword();
+                                break;
+                            case RTRESETDB:
+                                System.out.print("\nAre you sure you want to reset all settings and data? (y/n) ");
+                                String resetDecision = in.next();
+                                if (resetDecision.equals("y")) {
+                                    PowerSchool.reset();
+                                    System.out.println("\nSuccessfully reset database.");
+                                }
+                                break;
+                            case RTSHUTDOWN:
+                                rootShutdown();
+                                break;
+                            case RTLOGOUT:
+                                validLogin = logoutConfirm();
+                                in.nextLine();
+                                break;
+                            default:
+                                System.out.print("\nInvalid selection.\n");
+                                break;
+                        }
                     }
-                    
-                    createAndShowUI();
-                } else {
-                    System.out.println("\nInvalid username and/or password.");
+                ////////////////////////////// ADMINISTRATOR ////////////////////////////
+                } else if (activeUser.isAdministrator()) {
+                    boolean validLogin = true;
+                    String firstName = activeUser.getFirstName();
+                    System.out.printf("\nHello, again, %s!\n", firstName);
+                    while (validLogin) {
+                        switch (getSelectionAdministrator()) {
+                            case ADBYFAC:
+                                viewFaculty();
+                                break;
+                            case ADBYDEP:
+                                viewDepartments();
+                                break;
+                            case ADBYENROLL:
+                                viewStudents();
+                                break;
+                            case ADBYGRADE:
+                                viewStudentsByGrade();
+                                break;
+                            case ADBYCOURSE:
+                                viewStudentsByCourse();
+                                break;
+                            case ADCHANGEPWD:
+                                resetUserPassword();
+                                break;
+                            case ADLOGOUT:
+                                validLogin = logoutConfirm();
+                                in.nextLine();
+                            break;
+                            default:
+                                System.out.print("\nInvalid selection.\n");
+                                break;
+                        }
+                    }
+                ////////////////////////////// TEACHER ////////////////////////////
+                } else if (activeUser.isTeacher()) {
+                    boolean validLogin = true;
+                    String firstName = activeUser.getFirstName();
+                    System.out.printf("\nHello, again, %s!\n", firstName);
+                    while (validLogin) {
+                        switch (getSelectionTeacher()) {
+                            case TCBYCOURSE:
+                                enrollmentByCourse();
+                                break;
+                            case TCNEWASGN:
+                                addAssignment();
+                                break;
+                            case TCDLTASGN:
+                                deleteAssignment();
+                                break;
+                            case TCNEWGRD:
+                                enterGrade();
+                                break;
+                            case TCCHANGEPWD:
+                                resetUserPassword();
+                                break;
+                            case TCLOGOUT:
+                                validLogin = logoutConfirm();
+                                in.nextLine();
+                                break;
+                            default:
+                                System.out.print("\nInvalid selection.\n");
+                                break;
+                        }
+                    }
+                ////////////////////////////// STUDENT ////////////////////////////
+                } else if (activeUser.isStudent()) {
+                    boolean validLogin = true;
+                    String firstName = activeUser.getFirstName();
+                    System.out.printf("\nHello, again, %s!\n", firstName);
+                    while (validLogin) {
+                        switch (getSelectionStudent()) {
+                            case STVIEWGRD:
+                                ((Student) activeUser).viewCourseGrades();
+                                break;
+                            case STBYCOURSE:
+                                ((Student) activeUser).viewAssignmentGradesByCourse(in);
+                                break;
+                            case STCHANGEPWD:
+                                resetUserPassword();
+                                break;
+                            case STLOGOUT:
+                                validLogin = logoutConfirm();
+                                in.nextLine();
+                                break;
+                            default:
+                                System.out.print("\nInvalid selection.\n");
+                                break;
+                        }
+                    }
                 }
-            } catch (Exception e) {
-                shutdown(e);
+            } else {
+                System.out.println("\nInvalid username and/or password.");
             }
         }
     }
