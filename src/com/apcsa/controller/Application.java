@@ -392,17 +392,6 @@ public class Application {
         }
     }
 
-    public void createAndShowUI() {
-        System.out.println("\nHello, again, " + activeUser.getFirstName() + "!");
-        
-        if (activeUser.isRoot()) {
-            showRootUI();
-        } else if (activeUser.isAdministrator()) {
-            showAdministratorUI();
-        } else {
-            // TODO - add cases for teacher, student, and unknown
-        }
-    }
     
     private void showRootUI() {
         while (activeUser != null) {
@@ -487,7 +476,7 @@ public class Application {
      * Releases all resources and kills the application.
      */
 
-    private void shutdown() {        
+    private void rootShutdown() {        
         System.out.println();
             
         if (Utils.confirm(in, "Are you sure? (y/n) ")) {
