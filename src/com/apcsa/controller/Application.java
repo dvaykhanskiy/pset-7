@@ -476,6 +476,22 @@ public class Application {
         }
     }
     
+    private void viewDepartments() {
+        ArrayList<Teacher> teachers = PowerSchool.getTeachersByDept(getDepartmentSelection());
+
+        if (teachers.isEmpty()) {
+            System.out.println("\nNo teachers to display.");
+        } else {
+            System.out.println();
+
+            int i = 1;
+            for (Teacher teacher : teachers) {
+                System.out.println(i++ + ". " + teacher.getName() + " / " + teacher.getDepartmentName());
+            }
+        }
+
+    }
+    
     private void factoryReset() {
         //
         // ask root user to confirm intent to reset the database
