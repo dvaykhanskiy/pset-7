@@ -631,6 +631,58 @@ public class PowerSchool {
             }
      }
      
+     public static int getCourseIdFromCourseNo(String courseNo){
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_ID_FROM_DEPARTMENT_ID)) {
+
+                stmt.setString(1, courseNo);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt("course_id");
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return 1;
+     }
+
+     public static int getCourseId(String courseNumber) {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_ID)) {
+
+                 stmt.setString(1, courseNumber);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt("course_Id");
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return 0;
+     }
+
+     public static ArrayList<String> getAssignmentIds() {
+         ArrayList<String> assignmentIds = new ArrayList<String>();
+         try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ASSIGNMENT_IDS)) {
+
+                  try (ResultSet rs = stmt.executeQuery()) {
+                      while (rs.next()) {
+                        assignmentIds.add(rs.getString("assignment_id"));
+                      }
+                  }
+              return assignmentIds;
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return assignmentIds;
+     }
+     
      /**
       * Returns an MD5 hash of the user's plaintext password.
       *
