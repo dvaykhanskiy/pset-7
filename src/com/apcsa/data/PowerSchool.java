@@ -256,6 +256,78 @@ public class PowerSchool {
 
         return user;
     }
+    
+    public static ArrayList<Student> getStudents() {
+        ArrayList<Student> students = new ArrayList<Student>();
+
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            try (ResultSet rs = stmt.executeQuery(QueryUtils.GET_ALL_STUDENTS_SQL)) {
+                while (rs.next()) {
+                    students.add(new Student(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return students;
+    }
+
+    public static ArrayList<Student> getStudentsByGrade(int grade) {
+        ArrayList<Student> students = new ArrayList<Student>();
+
+        try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENTS_BY_GRADE_SQL)) {
+            stmt.setString(1, String.valueOf(grade));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    students.add(new Student(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return students;
+    }
+
+    public static ArrayList<Student> getStudentsByCourse(String courseNo) {
+        ArrayList<Student> students = new ArrayList<Student>();
+
+        try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENTS_BY_COURSE_SQL)) {
+            stmt.setString(1, courseNo);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while(rs.next()) {
+                    students.add(new Student(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return students;
+    }
+
+    public static ArrayList<String> getCourses(int departmentId) {
+        ArrayList<String> courses = new ArrayList<String>();
+
+        try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSES)) {
+            stmt.setString(1, String.valueOf(departmentId));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    courses.add(rs.getString("course_no"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return courses;
+    }
 
     /*
      * Establishes a connection to the database.
@@ -384,6 +456,23 @@ public class PowerSchool {
         }
         
         return teachers;
+     }
+     
+     public static ArrayList<Teacher> getTeachersByDept(int department) {
+         ArrayList<Teacher> teachers = new ArrayList<Teacher>();
+
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ALL_TEACHERS_BY_DEPT_SQL)) {
+             stmt.setString(1, String.valueOf(department));
+             try (ResultSet rs = stmt.executeQuery()) {
+
+                     teachers.add(new Teacher(rs));
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+         return teachers;
      }
      
      /**
