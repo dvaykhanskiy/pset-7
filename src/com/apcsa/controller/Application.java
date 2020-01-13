@@ -910,6 +910,17 @@ public class Application {
         return PowerSchool.getCourseId(courseNumber);
     }
     
+    public static void printMarkingPeriods() {
+        System.out.println("\nChoose a marking period or exam status.\n");
+        System.out.println("[1] MP1 assignment.");
+        System.out.println("[2] MP2 assignment.");
+        System.out.println("[3] MP3 assignment.");
+        System.out.println("[4] MP4 assignment.");
+        System.out.println("[5] Midterm exam.");
+        System.out.println("[6] Final exam.");
+        System.out.print("\n::: ");
+    }
+    
     private void deleteAssignment() {
         int courseId = getCourseId();
         System.out.println("\nChoose a marking period or exam status.\n");
@@ -965,6 +976,103 @@ public class Application {
          }
 
     }
+    
+    private String getCourseSelectionTeacher() {
+        Teacher teacher = PowerSchool.getTeacher(activeUser);
+        ArrayList<String> courses = PowerSchool.getCourses(teacher.getDepartmentId());
+        System.out.println();
+        int courseSelection = -1;
+        while (courseSelection <= 0 || courseSelection > courses.size()) {
+            int j = 1;
+            for (String i: courses) {
+                System.out.println("["+ j++ + "] " + i);
+            }
+            System.out.print("\n::: ");
+            courseSelection = Utils.getInt(in, -1);
+            if (courseSelection <= 0 || courseSelection > courses.size()) {
+                System.out.println("\nInvalid Selection.\n");
+            }
+        }
+        return courses.get(courseSelection-1);
+    }
+
+    public int getSelectionRoot() {
+        int rootDecision;
+        System.out.print("\n");
+        System.out.println("[1] Reset user password.");
+        System.out.println("[2] Factory reset database.");
+        System.out.println("[3] Logout.");
+        System.out.println("[4] Shutdown.");
+        System.out.print("\n::: ");
+
+        if (in.hasNextInt()) {
+            rootDecision = in.nextInt();
+            return rootDecision;
+        } else {
+            in.next();
+            return 10;
+        }
+    }
+
+    public int getSelectionAdministrator() {
+        int adminDecision;
+        System.out.print("\n");
+        System.out.println("[1] View faculty.");
+        System.out.println("[2] View faculty by department.");
+        System.out.println("[3] View student enrollment.");
+        System.out.println("[4] View student enrollment by grade.");
+        System.out.println("[5] View student enrollment by course.");
+        System.out.println("[6] Change password.");
+        System.out.println("[7] Logout.");
+        System.out.print("\n::: ");
+
+        if (in.hasNextInt()) {
+            adminDecision = in.nextInt();
+            return adminDecision;
+        } else {
+            in.next();
+            return 10;
+        }
+    }
+    
+    public int getSelectionTeacher() {
+        int teacherDecision;
+        System.out.print("\n");
+        System.out.println("[1] View enrollment by course.");
+        System.out.println("[2] Add assignment.");
+        System.out.println("[3] Delete assignment.");
+        System.out.println("[4] Enter grade.");
+        System.out.println("[5] Change password.");
+        System.out.println("[6] Logout.");
+        System.out.print("\n::: ");
+
+        if (in.hasNextInt()) {
+            teacherDecision = in.nextInt();
+            return teacherDecision;
+        } else {
+            in.next();
+            return 10;
+        }
+    }
+
+    public int getSelectionStudent() {
+        int studentDecision;
+        System.out.print("\n");
+        System.out.println("[1] View course grades.");
+        System.out.println("[2] View assignment grades by course.");
+        System.out.println("[3] Change password.");
+        System.out.println("[4] Logout.");
+        System.out.print("\n::: ");
+
+        if (in.hasNextInt()) {
+            studentDecision = in.nextInt();
+            return studentDecision;
+        } else {
+            in.next();
+            return 10;
+        }
+    }
+
     
     private void factoryReset() {
         //
