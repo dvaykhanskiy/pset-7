@@ -697,7 +697,7 @@ public class Application {
             System.out.println("\nAssignment: " + title + " (" + PowerSchool.getPointValue(title) + " pts)");
             System.out.println("Student: " + studentLastName + ", " + studentFirstName);
             int assignmentId = PowerSchool.getAssignmentIdFromTitle(title, courseId, markingPeriod);
-            int studentId = Integer.parseInt(studentIds.get(studentSelection));
+            int studentId = Integer.parseInt(studentIds.get(studentSelection-1));
             if (rows == 0) {
                 System.out.println("Current Grade: --");
             } else {
@@ -784,7 +784,9 @@ public class Application {
                 grades.add((Double) PowerSchool.getMidtermGrade(courseId, studentId));
             }
 
-            
+            double grade = Utils.getGrade(grades);
+            PowerSchool.updateCourseGrade(courseId, studentId, grade);
+            PowerSchool.getCourseGrades(studentId);
 
             ArrayList<Object> courseGrades = PowerSchool.getCourseGrades(studentId);
             ArrayList<Double> fourScale = new ArrayList<Double>();
@@ -818,7 +820,7 @@ public class Application {
             ArrayList<Integer> courseIds = PowerSchool.getCourseIds(studentId);
             ArrayList<Integer> creditHours = PowerSchool.getCreditHours(courseIds);
             int totalGradePoints = 0;
-            
+            int hours = 0;
             for (int i = 0; i < fourScale.size(); i++) {
                 totalGradePoints += fourScale.get(i)*creditHours.get(i);
                 hours += creditHours.get(i);
