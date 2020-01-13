@@ -494,6 +494,10 @@ public class PowerSchool {
          return teachers;
      }
      
+     public static Connection getConnection() throws SQLException {
+         return DriverManager.getConnection(PROTOCOL + DATABASE_URL);
+     }
+     
      /**
       * Returns an MD5 hash of the user's plaintext password.
       *
