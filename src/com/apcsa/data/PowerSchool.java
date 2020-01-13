@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
+import com.apcsa.controller.Application;
 import com.apcsa.controller.Utils;
 import com.apcsa.model.Administrator;
 import com.apcsa.model.Student;
@@ -72,7 +73,7 @@ public class PowerSchool {
 
     public static User login(String username, String password) {
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(QueryUtils.LOGIN_SQL)) {
+            PreparedStatement stmt = conn.prepareStatement(QueryUtils.LOGIN_SQL)) {
 
             stmt.setString(1, username);
             stmt.setString(2, Utils.getHash(password));
@@ -94,6 +95,39 @@ public class PowerSchool {
         }
 
         return null;
+    }
+    
+    public static void changePassword(String username, String password) {
+        try (Connection conn = getConnection()) {
+            int isChanged = updatePassword(conn, username, Utils.getHash(password));
+            if (isChanged != 1) {
+                System.err.println("Unable to successfully create password.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static boolean resetPassword(String username) {
+        try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_AUTH_SQL)) {
+
+            conn.setAutoCommit(false);
+            stmt.setString(1, Utils.getHash(username));
+            stmt.setString(2, username);
+
+            if (stmt.executeUpdate() == 1) {
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+               return false;
+
+            }
+           } catch (SQLException e) {
+               e.printStackTrace();
+               return false;
+           }
     }
 
     /**
