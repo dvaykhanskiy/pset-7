@@ -527,6 +527,42 @@ public class Application {
         }
     }
     
+    private void viewStudentsByGrade() {
+        ArrayList<Student> students = PowerSchool.getStudentsByGrade(getGradeSelection());
+
+        if (students.isEmpty()) {
+            System.out.println("\nNo students to display.");
+        } else {
+            System.out.println();
+
+            int i = 1;
+            for (Student student : students) {
+                System.out.println(i++ + ". " + student.getName() + " / #" + student.getClassRank());
+            }
+        }
+    }
+
+    private void viewStudentsByCourse() {
+        String courseNo = "";
+        try {
+        courseNo = getCourseSelection();
+        } catch(SQLException e) {
+
+        }
+        ArrayList<Student> students = PowerSchool.getStudentsByCourse(courseNo);
+
+        if (students.isEmpty()) {
+            System.out.println("\nNo students to display.");
+        } else {
+            System.out.println();
+
+            int i = 1;
+            for (Student student : students) {
+                System.out.println(i++ + ". " + student.getName() + " / " + fixGPA(student));
+            }
+        }
+    }
+    
     private void factoryReset() {
         //
         // ask root user to confirm intent to reset the database
