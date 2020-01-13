@@ -118,4 +118,73 @@ public class QueryUtils {
     public static final String GET_STUDENT_ID_FROM_COURSE_ID =
         "SELECT student_id FROM course_grades " +
         "WHERE course_id = ?";
+    
+    public static final String GET_COURSES =
+        "SELECT * FROM courses, teachers " +
+        "WHERE teachers.department_id =? AND teachers.department_id = courses.department_id "+
+        "ORDER BY courses.course_id";
+
+    public static final String GET_COURSE_ID =
+        "SELECT course_id FROM courses " +
+        "WHERE course_no = ?";
+
+    public static final String GET_STUDENTS_BY_STUDENT_ID =
+        "SELECT first_name, last_name, gpa FROM students " +
+        "WHERE student_id = ?";
+
+    public static final String GET_ASSIGNMENT_IDS =
+        "SELECT assignment_id FROM assignments ";
+
+    public static final String GET_STUDENT_COURSES_SQL =
+        "SELECT courses.title, grade, courses.course_id, courses.course_no FROM course_grades " +
+        "INNER JOIN courses ON course_grades.course_id = courses.course_id " +
+        "INNER JOIN students ON students.student_id = course_grades.student_id " +
+        "WHERE students.student_id = ?";
+
+    public static final String GET_COURSE_NUMBERS_FOR_STUDENT =
+        "SELECT courses.title, grade, courses.course_id, courses.course_no FROM course_grades " +
+        "INNER JOIN courses ON course_grades.course_id = courses.course_id " +
+        "INNER JOIN students ON students.student_id = course_grades.student_id " +
+        "WHERE students.student_id = ?";
+
+    public static final String GET_COURSE_ID_FROM_DEPARTMENT_ID =
+        "SELECT course_id FROM courses " +
+        "WHERE course_no = ?";
+
+    public static final String ADD_ASSIGNMENT =
+        "INSERT INTO assignments " +
+        "VALUES(?, ?, ?, ?, ?, ?, ?)";
+
+    public static final String PREVIOUS_ASSIGNMENT_ID =
+        "SELECT count(*) FROM assignments ";
+
+    public static final String DELETE_ASSIGNMENT =
+        "DELETE FROM assignments " +
+        "WHERE course_id = ?" +
+        "AND marking_period = ?" +
+        "AND title = ?";
+
+    public static final String GET_ASSIGNMENTS =
+       "SELECT * FROM assignments " +
+        "WHERE course_id = ? AND marking_period = ?";
+
+    public static final String GET_POINT_VALUES =
+        "SELECT * FROM assignments " +
+        "WHERE course_id = ? AND marking_period = ?";
+
+    public static final String GET_POINT_VALUE =
+        "SELECT point_value FROM assignments " +
+        "WHERE title = ?";
+
+    public static final String GET_COURSE_ID_FROM_COURSE_NO =
+        "SELECT course_id FROM courses " +
+        "WHERE course_no = ?";
+
+    public static final String GET_STUDENTS_FIRST_NAMES =
+        "SELECT first_name FROM students " +
+        "WHERE student_id = ?";
+
+    public static final String GET_STUDENTS_LAST_NAMES =
+        "SELECT last_name FROM students " +
+        "WHERE student_id = ?";
 }
