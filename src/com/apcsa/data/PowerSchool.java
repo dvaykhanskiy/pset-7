@@ -1283,5 +1283,66 @@ public class PowerSchool {
          }
      }
      
+     public static ArrayList<Integer> getCourseIds(int studentId) {
+         ArrayList<Integer> courseIds = new ArrayList<Integer>();
+          try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_ID_BY_STUDENT)) {
+
+                  stmt.setInt(1, studentId);
+                      try (ResultSet rs = stmt.executeQuery()) {
+                          while (rs.next()) {
+                              courseIds.add(rs.getInt("course_id"));
+                          }
+                      }
+
+                  return courseIds;
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return courseIds;
+      }
+
+     public static ArrayList<Integer> getCreditHours(ArrayList<Integer> courseIds) {
+         ArrayList<Integer> creditHours = new ArrayList<Integer>();
+          try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_CREDIT_HOURS)) {
+
+              for(int i = 0; i < courseIds.size(); i++) {
+                  stmt.setInt(1, courseIds.get(i));
+                  try (ResultSet rs = stmt.executeQuery()) {
+                      while (rs.next()) {
+                          creditHours.add(rs.getInt("credit_hours"));
+                      }
+                  }
+              }
+              return creditHours;
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return creditHours;
+      }
+
+     public static int updateGPA(double gpa, int studentId) {
+         try (Connection conn = getConnection();
+              PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_GPA)) {
+
+             conn.setAutoCommit(false);
+             stmt.setDouble(1, gpa);
+             stmt.setInt(2, studentId);
+
+             if (stmt.executeUpdate() == 1) {
+                 conn.commit();
+                 return 1;
+             } else {
+                 conn.rollback();
+                 return -1;
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+
+             return -1;
+         }
+     }
+     
      
 }
