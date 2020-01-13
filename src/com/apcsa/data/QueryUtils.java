@@ -106,4 +106,16 @@ public class QueryUtils {
         "SELECT * FROM course_grades, courses" +
         "WHERE course_grades.student_id = ? AND course_grades.course_id = courses.course_id" +
         "ORDER BY course_name";
+    public static final String UPDATE_AUTH_SQL =
+            "UPDATE users " +
+                "SET auth = ? " +
+            "WHERE username = ?";
+    public static final String GET_STUDENT_GRADE =
+        "SELECT grade FROM course_grades " +
+        "WHERE course_id = ? " +
+        "AND student_id = ?";
+
+    public static final String GET_STUDENT_ID_FROM_COURSE_ID =
+        "SELECT student_id FROM course_grades " +
+        "WHERE course_id = ?";
 }
