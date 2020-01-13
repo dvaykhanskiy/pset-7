@@ -198,18 +198,18 @@ public class Application {
     private String getCourseSelection() throws SQLException {
         boolean valid = false;
         String courseNo = null;
-        
+
         while (!valid) {
             System.out.print("\nCourse No.: ");
             courseNo = in.next();
-            
-            if (/* is a valid course number */) {
+
+            if (isValidCourse(courseNo)) {
                 valid = true;
             } else {
                 System.out.println("\nCourse not found.");
             }
         }
-        
+
         return courseNo;
     }
     
