@@ -599,6 +599,237 @@ public class Application {
         return selection + 8;
     }
     
+    public void enterGrade() {
+        boolean hasAssignment = true;
+           System.out.println("\nChoose a course.\n");
+           int departmentId = ((Teacher) activeUser).getDepartmentId(); //department id of the teacher
+           ArrayList<String> courses = PowerSchool.getCourses(departmentId); //all courses
+           for (int i = 0; i <= courses.size()-1; i++) {
+               System.out.println("[" + (i + 1) + "] " + courses.get(i)); //printing out courses
+           }
+           System.out.print("\n::: ");
+           int courseSelection = in.nextInt();
+
+           if (courseSelection < 1 || courseSelection > courses.size()) {
+               while (courseSelection < 1 || courseSelection > courses.size()){
+                   System.out.println("\nInvalid selection.");
+                   System.out.println("\nChoose a course.\n");
+                   for (int i = 0; i <= courses.size()-1; i++) {
+                          System.out.println("[" + (i + 1) + "] " + courses.get(i)); //printing out courses
+                      }
+                System.out.print("\n::: ");
+                courseSelection = in.nextInt();
+               }
+           }
+        String courseNo = courses.get(courseSelection-1);
+           int courseId = PowerSchool.getCourseIdFromCourseNo(courseNo); //courseId
+           printMarkingPeriods();
+           int markingPeriod = in.nextInt();//Selected Marking Period
+           if (markingPeriod < 1 || markingPeriod > 6) {
+               while (markingPeriod < 1 || markingPeriod > 6) {
+                   System.out.println("\nInvalid selection.");
+                   printMarkingPeriods();
+                   markingPeriod = in.nextInt();
+               }
+           }
+
+           ArrayList<String> assignments = PowerSchool.getAssignments(courseId, markingPeriod);//get courses by courseId and markingPeriod
+           if (assignments.isEmpty()) {
+               System.out.println("\nThere are no assignments here.");
+               hasAssignment = false;
+        }
+        while (hasAssignment) {
+            System.out.println("\nChoose an assignment.\n");
+            for (int i = 0; i <= assignments.size()-1; i++) {
+                System.out.println("[" + (i + 1) + "] " + assignments.get(i) + " (" + PowerSchool.getPointValue(assignments.get(i)) + " pts)");
+            }
+            System.out.print("\n::: ");
+            int assignmentSelection = in.nextInt();
+            if (assignmentSelection < 1 || assignmentSelection > assignments.size()) {
+                while (assignmentSelection < 1 || assignmentSelection > assignments.size()) {
+                    System.out.println("\nInvlaid selection.");
+                    System.out.println("\nChoose an assignment.\n");
+                    for (int i = 0; i <= assignments.size()-1; i++) {
+                        System.out.println("[" + (i + 1) + "] " + assignments.get(i) + " (" + PowerSchool.getPointValue(assignments.get(i)) + " pts)");
+                    }
+                    System.out.print("\n::: ");
+                    assignmentSelection = in.nextInt();
+                }
+            }
+            String title = assignments.get(assignmentSelection-1); //title of the assignment
+
+            String StringCourseId = PowerSchool.getCourseIdFromCourseNoTwo(courseNo);//courseId
+            ArrayList<String> studentIds = PowerSchool.getStudentId(StringCourseId);//getting studentIds enrolled in a course with courseId
+            ArrayList<String> students = new ArrayList<String>();
+            for (int i = 0; i < studentIds.size(); i++) {
+                students.addAll(PowerSchool.getStudentsByStudentId(studentIds.get(i))); //getting students firstname, lastname, and gpa
+            }
+            ArrayList<String> studentsFirstNames = new ArrayList<String>();
+            for (int i = 0; i < studentIds.size(); i++) {
+                studentsFirstNames.addAll(PowerSchool.getStudentFirstNames(studentIds.get(i)));
+            }
+            ArrayList<String> studentLastNames = new ArrayList<String>();
+            for (int i = 0; i < studentIds.size(); i++) {
+                studentLastNames.addAll(PowerSchool.getStudentLastNames(studentIds.get(i)));
+            }
+            System.out.println("\nChoose a student.\n");
+            for (int i = 0, x = 1; i < students.size(); i = i + 3) {
+                System.out.println("[" + (x) + "] " + students.get(i+1) + ", " + students.get(i));
+                x++;
+            }
+            System.out.print("\n::: ");
+            int studentSelection = in.nextInt();
+            if (studentSelection < 1 || studentSelection > students.size()/3) {
+                while (studentSelection < 1 || studentSelection > students.size()/3) {
+                    System.out.println("\nInvalid selection.");
+                    System.out.println("\nChoose a student.\n");
+                    for (int i = 0, x = 1; i < students.size(); i = i + 3) {
+                        System.out.println("[" + (x) + "] " + students.get(i+1) + ", " + students.get(i));
+                        x++;
+                    }
+                    System.out.print("\n::: ");
+                    studentSelection = in.nextInt();
+                }
+            }
+            String studentLastName = studentLastNames.get(studentSelection-1);
+            String studentFirstName = studentsFirstNames.get(studentSelection-1);
+            int rows = PowerSchool.assignmentGradesRows();
+            System.out.println("\nAssignment: " + title + " (" + PowerSchool.getPointValue(title) + " pts)");
+            System.out.println("Student: " + studentLastName + ", " + studentFirstName);
+            int assignmentId = PowerSchool.getAssignmentIdFromTitle(title, courseId, markingPeriod);
+            int studentId = Integer.parseInt(studentIds.get(studentSelection));
+            if (rows == 0) {
+                System.out.println("Current Grade: --");
+            } else {
+                if (PowerSchool.previousGrade(courseId, assignmentId, studentId) == -1) {
+                    System.out.println("Current Grade: --");
+                } else {
+                    System.out.println("Current Grade: " + PowerSchool.previousGrade(courseId, assignmentId, studentId));
+                }
+            }
+            System.out.print("\nNew Grade: ");
+            double pointsEarned = in.nextDouble();
+            if (pointsEarned < 0 || pointsEarned > PowerSchool.getPointValue(title)) {
+                while (pointsEarned < 0 || pointsEarned > PowerSchool.getPointValue(title)) {
+                    System.out.print("\nChoose a grade between 0 and the possible number of points.\n\nNew Grade: ");
+                    pointsEarned = in.nextDouble();
+                }
+            }
+            in.nextLine();
+            String wantTo = "you want to enter this grade?";
+            System.out.print("\nAre you sure you want to enter this grade? (y/n) ");
+            String yesNo = in.nextLine();
+            yesNo = yesNo.toLowerCase();
+            int checked = checkYesNo(yesNo, wantTo);
+
+            if (checked == -1) {
+                System.out.println("");
+            } else if (checked == 1) {
+                if (PowerSchool.checkGrade(courseId, assignmentId, studentId) == -1) {
+                    PowerSchool.addAssignmentGrade(courseId, assignmentId, studentId, pointsEarned, PowerSchool.getPointValue(title), 1);
+                    System.out.println("\nSuccesfully entered grade.");
+                } else if (PowerSchool.checkGrade(courseId, assignmentId, studentId) == 1) {
+                    PowerSchool.updateAssignmentGrade(courseId, assignmentId, studentId, pointsEarned);
+                    System.out.println("\nSuccesfully entered grade.");
+                }
+                ArrayList<Integer> assignmentIds = PowerSchool.getAssignmentIdByMP(markingPeriod);
+                ArrayList<Double> grades = new ArrayList<Double>();
+
+                for (int i = 0; i < assignmentIds.size(); i++) {
+                    grades.addAll(PowerSchool.getGrades(courseId, assignmentIds.get(i),studentId));
+                }
+                ArrayList<Double> percent = new ArrayList<Double>();
+                for (int i = 0; i < grades.size(); i+=2) {
+                    percent.add((grades.get(i)/grades.get(i+1))*100);
+                }
+                double total = 0;
+                for (int i = 0; i < percent.size(); i++) {
+                    total += percent.get(i);
+                }
+                double average = total/percent.size();
+                switch (markingPeriod) {
+                case 1: PowerSchool.updateCourseGradesMP1(courseId, studentId, average); break;
+                case 2: PowerSchool.updateCourseGradesMP2(courseId, studentId, average); break;
+                case 3: PowerSchool.updateCourseGradesMP3(courseId, studentId, average); break;
+                case 4: PowerSchool.updateCourseGradesMP4(courseId, studentId, average); break;
+                case 5: PowerSchool.updateCourseGradesMidterm(courseId, studentId, average); break;
+                case 6: PowerSchool.updateCourseGradesFinal(courseId, studentId, average); break;
+                default: System.out.println("\nInvalid selection.\n"); break;
+                }
+            }
+            ArrayList<Double> grades = new ArrayList<Double>();
+            if (PowerSchool.getMP1Grade(courseId, studentId) == null){
+                grades.add(-1.0);
+            } else {
+                grades.add((Double) PowerSchool.getMP1Grade(courseId, studentId));
+            }
+            if (PowerSchool.getMP2Grade(courseId, studentId) == null){
+                grades.add(-1.0);
+            } else {
+                grades.add((Double) PowerSchool.getMP2Grade(courseId, studentId));
+            }
+            if (PowerSchool.getMP3Grade(courseId, studentId) == null){
+                grades.add(-1.0);
+            } else {
+                grades.add((Double) PowerSchool.getMP3Grade(courseId, studentId));
+            }
+            if (PowerSchool.getMP4Grade(courseId, studentId) == null){
+                grades.add(-1.0);
+            } else {
+                grades.add((Double) PowerSchool.getMP4Grade(courseId, studentId));
+            }
+            if (PowerSchool.getMidtermGrade(courseId, studentId) == null){
+                grades.add(-1.0);
+            } else {
+                grades.add((Double) PowerSchool.getMidtermGrade(courseId, studentId));
+            }
+
+            
+
+            ArrayList<Object> courseGrades = PowerSchool.getCourseGrades(studentId);
+            ArrayList<Double> fourScale = new ArrayList<Double>();
+            for (int i = 0; i < courseGrades.size(); i++) {
+                if ((Double) courseGrades.get(i) == -1.0) {
+
+                } else if ((Double) courseGrades.get(i) >= 93 && (Double) courseGrades.get(i) <= 100) {
+                    fourScale.add(4.0);
+                } else if ((Double) courseGrades.get(i) >= 90 && (Double) courseGrades.get(i) <= 92) {
+                    fourScale.add(3.7);
+                } else if ((Double) courseGrades.get(i) >= 87 && (Double) courseGrades.get(i) <= 89) {
+                    fourScale.add(3.3);
+                } else if ((Double) courseGrades.get(i) >= 83 && (Double) courseGrades.get(i) <= 86) {
+                    fourScale.add(3.0);
+                } else if ((Double) courseGrades.get(i) >= 80 && (Double) courseGrades.get(i) <= 82) {
+                    fourScale.add(2.7);
+                } else if ((Double) courseGrades.get(i) >= 77 && (Double) courseGrades.get(i) <= 79) {
+                    fourScale.add(2.3);
+                } else if ((Double) courseGrades.get(i) >= 73 && (Double) courseGrades.get(i) <= 76) {
+                    fourScale.add(2.0);
+                } else if ((Double) courseGrades.get(i) >= 70 && (Double) courseGrades.get(i) <= 72) {
+                    fourScale.add(1.7);
+                } else if ((Double) courseGrades.get(i) >= 67 && (Double) courseGrades.get(i) <= 69) {
+                    fourScale.add(1.3);
+                } else if ((Double) courseGrades.get(i) >= 65 && (Double) courseGrades.get(i) <= 66) {
+                    fourScale.add(1.0);
+                } else if ((Double) courseGrades.get(i) > 65) {
+                    fourScale.add(0.0);
+                }
+            }
+            ArrayList<Integer> courseIds = PowerSchool.getCourseIds(studentId);
+            ArrayList<Integer> creditHours = PowerSchool.getCreditHours(courseIds);
+            int totalGradePoints = 0;
+            
+            for (int i = 0; i < fourScale.size(); i++) {
+                totalGradePoints += fourScale.get(i)*creditHours.get(i);
+                hours += creditHours.get(i);
+            }
+            double gpa = (double) (totalGradePoints)/ (double) hours;
+            double roundedGpa = Math.round(gpa * 100.0) / 100.0;
+            PowerSchool.updateGPA(roundedGpa, studentId);
+            hasAssignment = false;
+        }
+    }
+    
     private void factoryReset() {
         //
         // ask root user to confirm intent to reset the database
