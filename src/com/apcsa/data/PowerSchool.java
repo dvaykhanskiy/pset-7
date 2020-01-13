@@ -328,6 +328,25 @@ public class PowerSchool {
 
         return courses;
     }
+    
+    public static ArrayList<String> getCoursesFromDepartment(int departmentId) {
+        ArrayList<String> courses = new ArrayList<String>();
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSES)) {
+                 stmt.setInt(1, departmentId);
+
+                 try (ResultSet rs = stmt.executeQuery()) {
+                     while (rs.next()) {
+                         String result = rs.getString("course_no");
+                       courses.add(result);
+                     }
+                 }
+             return courses;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+         return courses;
+     }
 
     /*
      * Establishes a connection to the database.
