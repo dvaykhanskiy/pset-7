@@ -834,6 +834,125 @@ public class PowerSchool {
           return students;
      }
      
+     public static int getAssignmentIdFromTitle(String title, int courseId, int markingPeriod) {
+         try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ASSIGNMENT_ID_FROM_TITLE_PLUS)) {
+
+                 stmt.setString(1,  title);
+                 stmt.setInt(2,  courseId);
+                 stmt.setInt(3,  markingPeriod);
+                 try (ResultSet rs = stmt.executeQuery()) {
+                      while (rs.next()) {
+                          return rs.getInt("assignment_id");
+                      }
+                  }
+              return -1;
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return -1;
+     }
+     
+     public static int assignmentGradesRows() {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.ROWS_IN_ASSIGNMENT_GRADES)) {
+
+             try (ResultSet rs = stmt.executeQuery()) {
+                 if (rs.next()) {
+                     return rs.getInt("count(*)");
+                 }
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+         return 1;
+     }
+     
+     public static int previousGrade(int courseId, int assignmentId, int studentId) {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.PREVIOUS_GRADE)) {
+
+             stmt.setInt(1, courseId);
+             stmt.setInt(2, assignmentId);
+             stmt.setInt(3, studentId);
+             try (ResultSet rs = stmt.executeQuery()) {
+                 if (rs.next()) {
+                     return rs.getInt("points_earned");
+                 }
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+         return -1;
+     }
+
+     public static int checkGrade(int courseId, int assignmentId, int studentId) {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.FIND_GRADE)) {
+
+             stmt.setInt(1, courseId);
+             stmt.setInt(2, assignmentId);
+             stmt.setInt(3, studentId);
+             try (ResultSet rs = stmt.executeQuery()) {
+                 if (rs.next()) {
+                     return rs.getInt("is_graded");
+                 }
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+         return -1;
+     }
+
+     public static int addAssignmentGrade(int courseId, int assignmentId, int studentId, double pointsEarned, int pointsPossible, int isGraded) {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.ADD_ASSIGNMENT_GRADE)) {
+
+                conn.setAutoCommit(false);
+                stmt.setInt(1, courseId);
+                stmt.setInt(2, assignmentId);
+                stmt.setInt(3, studentId);
+                stmt.setDouble(4, pointsEarned);
+                stmt.setInt(5, pointsPossible);
+                stmt.setInt(6, isGraded);
+
+                if (stmt.executeUpdate() == 1) {
+                    conn.commit();
+                    return 1;
+                } else {
+                    conn.rollback();
+                    return -1;
+                }
+            } catch (SQLException e) {
+                return -1;
+            }
+     }
+
+     public static int updateAssignmentGrade(int courseId, int assignmentId, int studentId, double pointsEarned) {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_ASSIGNMENT_GRADE)) {
+
+                conn.setAutoCommit(false);
+                stmt.setDouble(1, pointsEarned);
+                stmt.setInt(2, courseId);
+                stmt.setInt(3, assignmentId);
+                stmt.setInt(4, studentId);
+
+                if (stmt.executeUpdate() == 1) {
+                    conn.commit();
+                    return 1;
+                } else {
+                    conn.rollback();
+                    return -1;
+                }
+            } catch (SQLException e) {
+                return -1;
+            }
+     }
+     
      /**
       * Returns an MD5 hash of the user's plaintext password.
       *
