@@ -517,6 +517,39 @@ public class PowerSchool {
          return DriverManager.getConnection(PROTOCOL + DATABASE_URL);
      }
      
+     public static int getNumberOfCourses() {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_NUMBER_OF_COURSES)) {
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return 1;
+     }
+     
+     public static String getCourseNumber(int i) {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_NUMBER)) {
+
+                 stmt.setString(1, String.valueOf(i));
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getString("course_no");
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return "e";
+     }
+     
      /**
       * Returns an MD5 hash of the user's plaintext password.
       *
