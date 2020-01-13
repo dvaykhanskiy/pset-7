@@ -582,6 +582,23 @@ public class Application {
         return validCourse;
     }
     
+    private int getGradeSelection() {
+        int selection = -1;
+        System.out.println("\nChoose a grade level.");
+
+        while (selection < 1 || selection > 4) {
+            System.out.println("\n[1] Freshman.");
+            System.out.println("[2] Sophomore.");
+            System.out.println("[3] Junior.");
+            System.out.println("[4] Senior.");
+            System.out.print("\n::: ");
+
+            selection = Utils.getInt(in, -1);
+        }
+
+        return selection + 8;
+    }
+    
     private void factoryReset() {
         //
         // ask root user to confirm intent to reset the database
