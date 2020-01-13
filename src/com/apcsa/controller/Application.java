@@ -563,6 +563,25 @@ public class Application {
         }
     }
     
+    private String fixGPA(Student student) {
+        double GPA = student.getGpa();
+        if (GPA == -1) {
+            return "--";
+        } else {
+            return String.valueOf(GPA);
+        }
+    }
+
+    private boolean isValidCourse(String courseId) {
+        boolean validCourse = false;
+        for (int i=1; i <  PowerSchool.getNumberOfCourses(); i++) {
+            if (PowerSchool.getCourseNumber(i).equals(courseId)) {
+                validCourse = true;
+            }
+        }
+        return validCourse;
+    }
+    
     private void factoryReset() {
         //
         // ask root user to confirm intent to reset the database
