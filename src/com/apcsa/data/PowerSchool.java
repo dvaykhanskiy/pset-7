@@ -413,6 +413,25 @@ public class PowerSchool {
             return -1;
         }
     }
+    
+    private static int updatePassword(Connection conn, String username, String password) {
+        try (PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_PASSWORD_SQL)) {
+            conn.setAutoCommit(false);
+            stmt.setString(1, password);
+            stmt.setString(2, username);
+            if (stmt.executeUpdate() == 1) {
+                conn.commit();
+                return 1;
+            } else {
+                conn.rollback();
+                return -1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 
     /*
      * Builds the database. Executes a SQL script from a configuration file to
