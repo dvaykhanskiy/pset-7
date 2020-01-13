@@ -683,6 +683,43 @@ public class PowerSchool {
           return assignmentIds;
      }
      
+     public static int assignmentRows() {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.PREVIOUS_ASSIGNMENT_ID)) {
+
+             try (ResultSet rs = stmt.executeQuery()) {
+                 if (rs.next()) {
+                     return rs.getInt("count(*)");
+                 }
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+         return 1;
+     }
+
+     public static int deleteAssignment(int courseId, int markingPeriod, String title) {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.DELETE_ASSIGNMENT)) {
+
+                conn.setAutoCommit(false);
+                stmt.setInt(1, courseId);
+                stmt.setInt(2, markingPeriod);
+                stmt.setString(3, title);
+
+                if (stmt.executeUpdate() == 1) {
+                    conn.commit();
+                    return 1;
+                } else {
+                    conn.rollback();
+                    return -1;
+                }
+            } catch (SQLException e) {
+                return -1;
+            }
+     }
+     
      /**
       * Returns an MD5 hash of the user's plaintext password.
       *
