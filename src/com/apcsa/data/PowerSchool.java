@@ -550,6 +550,62 @@ public class PowerSchool {
             return "e";
      }
      
+     public static ArrayList<String> getStudentId(String courseId) {
+         ArrayList<String> studentIds = new ArrayList<String>();
+         try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENT_ID_FROM_COURSE_ID)) {
+
+                 stmt.setString(1, courseId);
+                  try (ResultSet rs = stmt.executeQuery()) {
+                      while (rs.next()) {
+                          studentIds.add(rs.getString("student_id"));
+                      }
+                  }
+              return studentIds;
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return studentIds;
+     }
+
+     public static ArrayList<String> getStudentsByStudentId(String studentIds) {
+         ArrayList<String> students = new ArrayList<String>();
+         try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENTS_BY_STUDENT_ID)) {
+
+                 stmt.setString(1,  studentIds);
+                  try (ResultSet rs = stmt.executeQuery()) {
+                      while (rs.next()) {
+                          students.add(rs.getString("first_name"));
+                          students.add(rs.getString("last_name"));
+                          students.add(rs.getString("gpa"));
+                      }
+                  }
+              return students;
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return students;
+     }
+
+     public static String getStudentGrade(String courseId, String studentId) {
+         try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENT_GRADE)) {
+
+                 stmt.setString(1,  courseId);
+                 stmt.setString(2,  studentId);
+                  try (ResultSet rs = stmt.executeQuery()) {
+                      while (rs.next()) {
+                          return rs.getString("grade");
+                      }
+                  }
+              return "no";
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return "no";
+     }
+     
      /**
       * Returns an MD5 hash of the user's plaintext password.
       *
