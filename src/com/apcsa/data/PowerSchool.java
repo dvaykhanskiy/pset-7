@@ -720,6 +720,120 @@ public class PowerSchool {
             }
      }
      
+     public static ArrayList<String> getPointValues(int courseId, int markingPeriod) {
+         ArrayList<String> pointValues = new ArrayList<String>();
+
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_POINT_VALUES)) {
+
+             conn.setAutoCommit(false);
+             stmt.setInt(1, courseId);
+             stmt.setInt(2, markingPeriod);
+
+             try (ResultSet rs = stmt.executeQuery()) {
+                 while (rs.next()) {
+                    pointValues.add(rs.getString("point_value"));
+                 }
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+         return pointValues;
+     }
+
+     public static ArrayList<String> getAssignments(int courseId, int markingPeriod) {
+         ArrayList<String> assignments = new ArrayList<String>();
+
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ASSIGNMENTS)) {
+
+             conn.setAutoCommit(false);
+             stmt.setInt(1, courseId);
+             stmt.setInt(2, markingPeriod);
+
+             try (ResultSet rs = stmt.executeQuery()) {
+                 while (rs.next()) {
+                    assignments.add(rs.getString("title"));
+                 }
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+         return assignments;
+     }
+
+     public static int getPointValue(String title) {
+         try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_POINT_VALUE)) {
+
+             stmt.setString(1, title);
+
+             try (ResultSet rs = stmt.executeQuery()) {
+                 if (rs.next()) {
+                     return rs.getInt("point_value");
+                 }
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+         return 1;
+     }
+
+     public static String getCourseIdFromCourseNoTwo(String courseNo) {
+         try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_ID_FROM_COURSE_NO)) {
+                  stmt.setString(1,  courseNo);
+                  try (ResultSet rs = stmt.executeQuery()) {
+                      while (rs.next()) {
+                          return rs.getString("course_id");
+                      }
+                  }
+              return "no";
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return "no";
+     }
+
+     public static ArrayList<String> getStudentFirstNames(String studentIds) {
+         ArrayList<String> students = new ArrayList<String>();
+         try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENTS_FIRST_NAMES)) {
+
+                 stmt.setString(1, studentIds);
+                  try (ResultSet rs = stmt.executeQuery()) {
+                      while (rs.next()) {
+                          students.add(rs.getString("first_name"));
+                      }
+                  }
+              return students;
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return students;
+     }
+
+     public static Collection<? extends String> getStudentLastNames(String studentIds) {
+         ArrayList<String> students = new ArrayList<String>();
+         try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENTS_LAST_NAMES)) {
+
+                 stmt.setString(1,  studentIds);
+                  try (ResultSet rs = stmt.executeQuery()) {
+                      while (rs.next()) {
+                          students.add(rs.getString("last_name"));
+                      }
+                  }
+              return students;
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return students;
+     }
+     
      /**
       * Returns an MD5 hash of the user's plaintext password.
       *
