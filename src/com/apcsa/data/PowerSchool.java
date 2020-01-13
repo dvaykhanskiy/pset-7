@@ -953,6 +953,24 @@ public class PowerSchool {
             }
      }
      
+     public static ArrayList<Integer> getAssignmentIdByMP(int markingPeriod) {
+         ArrayList<Integer> assignments = new ArrayList<Integer>();
+         try (Connection conn = getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ASSIGNMENT_BY_MP)) {
+
+                 stmt.setInt(1,  markingPeriod);
+                  try (ResultSet rs = stmt.executeQuery()) {
+                      while (rs.next()) {
+                          assignments.add(rs.getInt("assignment_id"));
+                      }
+                  }
+              return assignments;
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+          return assignments;
+     }
+     
      /**
       * Returns an MD5 hash of the user's plaintext password.
       *
