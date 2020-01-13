@@ -557,7 +557,13 @@ public class PowerSchool {
       * @return an MD5 hash of the password
       */
 
-     
+     public static void shutdown(boolean error) {
+         if (error) {
+             System.out.println("\nA fatal error has occurred. Shutting down...");
+             Application.running = false;
+             return;
+         }
+     }
      
      
 }
