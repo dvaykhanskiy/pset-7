@@ -22,6 +22,10 @@ import com.apcsa.model.Student;
 import com.apcsa.model.Teacher;
 import com.apcsa.model.User;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+
 public class PowerSchool {
 
     private final static String PROTOCOL = "jdbc:sqlite:";
@@ -355,10 +359,6 @@ public class PowerSchool {
      * @throws SQLException
      */
 
-    private static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(PROTOCOL + DATABASE_URL);
-    }
-
     /*
      * Updates the last login time for the user.
      *
@@ -438,7 +438,7 @@ public class PowerSchool {
      * create the tables, setup the primary and foreign keys, and load sample data.
      */
 
-    private static void reset() {
+    public static void reset() {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              BufferedReader br = new BufferedReader(new FileReader(new File("config/setup.sql")))) {

@@ -41,15 +41,6 @@ public class Teacher extends User {
      * @throws SQLException
      */
 
-    public Teacher(ResultSet rs) throws SQLException {
-        super(-1, "teacher", null, null, null);
-        
-        this.teacherId = rs.getInt("teacher_id");
-        this.departmentId = rs.getInt("department_id");
-        this.firstName = rs.getString("first_name");
-        this.lastName = rs.getString("last_name");
-        this.departmentName = rs.getString("title");
-    }
     
     /**
      * @return departmentName
@@ -67,5 +58,14 @@ public class Teacher extends User {
 
     public String getName() {
         return lastName + ", " + firstName;
+    }
+    
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public int getDepartmentId() {
+        return departmentId;
     }
 }

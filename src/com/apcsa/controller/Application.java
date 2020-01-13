@@ -45,21 +45,6 @@ public class Application {
     
     enum AdministratorAction { FACULTY, DEPARTMENT, STUDENTS, GRADE, COURSE, PASSWORD, LOGOUT }
     
-    private void showAdministratorUI() {
-        while (activeUser != null) {
-            switch (getAdministratorMenuSelection()) {
-                case FACULTY: viewFaculty(); break;
-                case DEPARTMENT: viewFacultyByDepartment(); break;
-                case STUDENTS: viewStudents(); break;
-                case GRADE: viewStudentsByGrade(); break;
-                case COURSE: viewStudentsByCourse(); break;
-                case PASSWORD: changePassword(false); break;
-                case LOGOUT: logout(); break;
-                default: System.out.println("\nInvalid selection."); break;
-            }
-        }
-    }
-    
     private AdministratorAction getAdministratorMenuSelection() {
         System.out.println();
         
@@ -156,17 +141,6 @@ public class Application {
         return courseNo;
     }
     
-    public void createAndShowUI() {
-        System.out.println("\nHello, again, " + activeUser.getFirstName() + "!");
-        
-        if (activeUser.isRoot()) {
-            showRootUI();
-        } else if (activeUser.isAdministrator()) {
-            showAdministratorUI();
-        } else {
-            // TODO - add cases for teacher, student, and unknown
-        }
-    }
     
     public Application() {
         this.in = new Scanner(System.in);
@@ -336,18 +310,6 @@ public class Application {
     }
 
     
-    private void showRootUI() {
-        while (activeUser != null) {
-            switch (getRootMenuSelection()) {
-                case PASSWORD: resetPassword(); break;
-                case DATABASE: factoryReset(); break;
-                case LOGOUT: logout(); break;
-                case SHUTDOWN: shutdown(); break;
-                default: System.out.println("\nInvalid selection."); break;
-            }
-        }
-    }
-    
     private RootAction getRootMenuSelection() {
         System.out.println();
         
@@ -404,21 +366,6 @@ public class Application {
         }
     }
     
-    private void viewFaculty() {
-        ArrayList<Teacher> teachers = PowerSchool.getTeachers();
-
-        if (teachers.isEmpty()) {
-            System.out.println("\nNo teachers to display.");
-        } else {
-            System.out.println();
-
-            int i = 1;
-            for (Teacher teacher : teachers) {
-                System.out.println(i++ + ". " + teacher.getName() + " / " + teacher.getDepartmentName());
-            }
-        }
-    }
-    
     private void viewDepartments() {
         ArrayList<Teacher> teachers = PowerSchool.getTeachersByDept(getDepartmentSelection());
 
@@ -435,25 +382,6 @@ public class Application {
 
     }
     
-    private int getDepartmentSelection() {
-        int selection = -1;
-        
-        System.out.println("\nChoose a department.");
-
-        while (selection < 1 || selection > 6) {
-            System.out.println("\n[1] Computer Science.");
-            System.out.println("[2] English.");
-            System.out.println("[3] History.");
-            System.out.println("[4] Mathematics.");
-            System.out.println("[5] Physical Education.");
-            System.out.println("[6] Science.");
-            System.out.print("\n::: ");
-
-            selection = Utils.getInt(in, -1);
-        }
-
-        return selection;
-    }
     
     private void viewStudents() {
         ArrayList<Student> students = PowerSchool.getStudents();
@@ -525,22 +453,6 @@ public class Application {
         return validCourse;
     }
     
-    private int getGradeSelection() {
-        int selection = -1;
-        System.out.println("\nChoose a grade level.");
-
-        while (selection < 1 || selection > 4) {
-            System.out.println("\n[1] Freshman.");
-            System.out.println("[2] Sophomore.");
-            System.out.println("[3] Junior.");
-            System.out.println("[4] Senior.");
-            System.out.print("\n::: ");
-
-            selection = Utils.getInt(in, -1);
-        }
-
-        return selection + 8;
-    }
     
     public void enterGrade() {
         boolean hasAssignment = true;
@@ -921,7 +833,7 @@ public class Application {
     }
     
     private String getCourseSelectionTeacher() {
-        Teacher teacher = PowerSchool.getTeacher(activeUser);
+        Teacher teacher = (Teacher) PowerSchool.getTeacher(activeUser);
         ArrayList<String> courses = PowerSchool.getCourses(teacher.getDepartmentId());
         System.out.println();
         int courseSelection = -1;
