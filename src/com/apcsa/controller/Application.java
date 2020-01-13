@@ -905,6 +905,11 @@ public class Application {
         }
     }
     
+    private int getCourseId() {
+        String courseNumber = getCourseSelectionTeacher();
+        return PowerSchool.getCourseId(courseNumber);
+    }
+    
     private void deleteAssignment() {
         int courseId = getCourseId();
         System.out.println("\nChoose a marking period or exam status.\n");
