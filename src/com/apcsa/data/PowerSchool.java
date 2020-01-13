@@ -129,6 +129,34 @@ public class PowerSchool {
                return false;
            }
     }
+    
+    public static int resetTimestamp(String username) {
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_LAST_LOGIN_SQL)) {
+                // https://stackoverflow.com/questions/18915075/java-convert-string-to-timestamp
+                conn.setAutoCommit(false);
+                stmt.setString(1, "0000-00-00 00:00:00.000");
+                stmt.setString(2, username);
+
+                if (stmt.executeUpdate() == 1) {
+                    conn.commit();
+
+                    return 1;
+                } else {
+                    conn.rollback();
+
+                    return -1;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+                return -1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
     /**
      * Returns the administrator account associated with the user.
@@ -309,27 +337,6 @@ public class PowerSchool {
         }
     }
     
-    public static boolean resetPassword(String username) {
-    	try (Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement(QueryUtils.UPDATE_AUTH_SQL)) {
-
-    		conn.setAutoCommit(false);
-            statement.setString(1, Utils.getHash(username));
-            statement.setString(2, username);
-
-            if (statement.executeUpdate() == 1) {
-                conn.commit();
-                return true;
-            } else {
-                conn.rollback();
-               return false;
-
-            }
-           } catch (SQLException e) {
-               e.printStackTrace();
-               return false;
-           }
-    }
     
     /**
      * Retrieves all faculty members.
